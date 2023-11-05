@@ -1,0 +1,10 @@
+https://www.hackerrank.com/challenges/earnings-of-employees/problem?isFullScreen=false
+
+SELECT E.salary*E.months, count(E.Employee_id)
+FROM Employee E
+WHERE E.salary*E.months = (SELECT MAX(salary*months) FROM Employee)
+GROUP BY E.salary*E.months;
+
+
+//Optimal query
+SELECT * FROM (SELECT salary*months ES, count(*) FROM Empployee GROUP BY salary*month order by salary*month desc) as E limit 1;

@@ -1,0 +1,8 @@
+https://www.hackerrank.com/challenges/contest-leaderboard/problem?isFullScreen=false
+
+SELECT H.hacker_id, H.name, sum(temp1.mx_score) max_score
+FROM Hackers H
+JOIN (SELECT hacker_id, challenge_id, max(score) mx_score FROM Submissions GROUP BY hacker_id,challenge_id having mx_score > 0) temp1
+ON H.hacker_id = temp1.hacker_id
+GROUP BY H.hacker_id, H.name
+ORDER BY max_score desc, hacker_id asc;

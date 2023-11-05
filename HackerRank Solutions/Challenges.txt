@@ -1,0 +1,29 @@
+https://www.hackerrank.com/challenges/challenges/problem?isFullScreen=false
+
+
+SELECT H.hacker_id, H.name, count(C.challenge_id) cnt
+FROM Hackers H
+JOIN Challenges C
+ON H.hacker_id = C.hacker_id
+GROUP BY H.hacker_id, H.name
+HAVING cnt = (SELECT count(challenge_id) FROM Challenges GROUP BY hacker_id ORDER BY COUNT(challenge_id) desc limit 1)
+OR cnt not in
+(SELECT cnt_chlng FROM (SELECT hacker_id, count(challenge_id) cnt_chlng FROM Challenges GROUP BY hacker_id) temp2 GROUP BY cnt_chlng having count(cnt_chlng) != 1)
+ORDER BY cnt desc, H.hacker_id asc;
+
+//With clause
+
+WITH TABLE2 AS
+    (SELECT H.hacker_id AS H2, H.name AS N2, count(C.hacker_id) AS countN FROM Hackers H
+    INNER JOIN Challenges C
+    ON H.hacker_id=C.hacker_id
+    GROUP BY C.hacker_id,H.name
+    ORDER BY count(C.hacker_id) DESC, H.hacker_id ASC),
+
+    TABLE3 AS
+    (SELECT countN AS CN3, count(countN) AS CN4 FROM TABLE2
+     GROUP BY countN
+     HAVING count(countN)=1)
+
+SELECT H2,N2,countN FROM TABLE2
+WHERE countN =(SELECT MAX(countN) FROM TABLE2) OR countN IN (SELECT CN3 FROM TABLE3)
